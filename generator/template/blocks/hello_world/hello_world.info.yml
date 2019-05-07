@@ -1,0 +1,17 @@
+name: <%= blockName %>
+machine_name: <%= blockMachineName %>
+type: pdb
+description: '<%= blockName %> pdb_vue block'
+package: Vue
+core: '8.x'
+module_status: active
+presentation: vue
+add_css:
+  header:
+    theme:
+      'dist/css/<%= blockMachineName %>.css': {}
+add_js:
+  footer:
+    'dist/js/<%= blockMachineName %>.js': {}
+libraries:
+  - <%= drupalModuleMachineName %>/pdb_vue.common

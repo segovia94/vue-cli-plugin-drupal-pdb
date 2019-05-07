@@ -1,0 +1,21 @@
+{
+  "name": "vue-cli-plugin-drupal-pdb",
+  "version": "0.1.0",
+  "description": "Vue CLI 3 plugin for Drupal Progressively Decoupled Blocks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/segovia94/vue-cli-plugin-drupal-pdb"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack-entry-plus": "^1.0.15"
+  }
+}

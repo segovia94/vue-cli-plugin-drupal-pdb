@@ -1,0 +1,5 @@
+pdb_vue.common:
+  version: VERSION
+  js:
+    dist/js/chunk-vendors.js: { minified: true }
+#    dist/js/chunk-common.js: { minified: true }
