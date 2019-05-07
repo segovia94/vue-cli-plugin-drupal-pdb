@@ -50,6 +50,18 @@ const renameMountPoint = (options) => {
   fs.writeFileSync(entryFile, lines.join(EOL), { encoding: 'utf-8' })
 }
 
+const renameBlocksDir = (files, oldDir, newDir) => {
+  if (oldDir !== newDir) {
+    const keys = Object.keys(files)
+    const changeKeys = keys.filter(item => item.includes(oldDir))
+
+    changeKeys.forEach(item => {
+      const newName = item.replace(oldDir, newDir)
+      renameFile(files, item, newName)
+    })
+  }
+}
+
 module.exports = (api, options) => {
 
   api.extendPackage({
@@ -57,30 +69,32 @@ module.exports = (api, options) => {
   })
 
   if (options.singleInstance) {
-    // Generate the files.
-    api.render('./template', {
+    const originalBlocksDir = 'blocks/hello_world/'
+    const newBlocksDir = 'blocks/' + options.blockMachineName + '/'
+
+    // Generate the Framework files.
+    if (options.generate === 'whole') {
+      api.render('./template_framework', {
+        ...options,
+      })
+
+      api.postProcessFiles(files => {
+        // Rename the libraries.yml files.
+        renameFile(files, 'pdb_vue.libraries.yml', options.drupalModuleMachineName + '.libraries.yml')
+      })
+    }
+
+    // New block.
+    api.render('./template_block', {
       ...options,
     })
 
     api.postProcessFiles(files => {
-      const originalBlocksDir = 'blocks/hello_world/'
-      const newBlocksDir = 'blocks/' + options.blockMachineName + '/'
-
-      // Rename the yml files.
+      // Rename the info.yml files.
       renameFile(files, originalBlocksDir + 'hello_world.info.yml', originalBlocksDir + options.blockMachineName + '.info.yml')
-      renameFile(files, 'pdb_vue.libraries.yml', options.drupalModuleMachineName + '.libraries.yml')
 
       // Rename the new block directory files.
-      if (originalBlocksDir !== newBlocksDir) {
-        const keys = Object.keys(files)
-
-        const changeKeys = keys.filter(item => item.includes(originalBlocksDir))
-
-        changeKeys.forEach(item => {
-          const newName = item.replace(originalBlocksDir, newBlocksDir)
-          renameFile(files, item, newName)
-        })
-      }
+      renameBlocksDir(files, originalBlocksDir, newBlocksDir)
     })
 
     api.onCreateComplete(() => {
