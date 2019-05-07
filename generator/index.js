@@ -52,6 +52,10 @@ const renameMountPoint = (options) => {
 
 module.exports = (api, options) => {
 
+  api.extendPackage({
+    drupalModule: options.drupalModuleMachineName,
+  })
+
   if (options.singleInstance) {
     // Generate the files.
     api.render('./template', {
