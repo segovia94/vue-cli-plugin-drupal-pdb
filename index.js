@@ -1,26 +1,8 @@
-const entryPlus = require('webpack-entry-plus')
 const glob = require('glob')
-
-const entryFiles = [
-  {
-    entryFiles: glob.sync('./blocks/**/main.js'),
-    outputName (item) {
-      const regex = /blocks\/([^/]+)\/main/
-      const found = item.match(regex)
-      return item = found[1]
-    },
-  },
-]
 
 module.exports = (api, options) => {
 
-  api.configureWebpack(config => {
-    config.entry = entryPlus(entryFiles)
-  })
-
   api.chainWebpack(config => {
-    // config.optimization.splitChunks(false)
-
     // Exclude the Vue library since Drupal is already adding it globally.
     const mode = config.store.get('mode')
     if (mode !== 'development') {
@@ -31,7 +13,25 @@ module.exports = (api, options) => {
         'jquery': 'jQuery',
       })
     }
-
   })
 
+}
+
+module.exports.singleInstances = () => {
+  let pages = {}
+  const files = glob.sync('./blocks/**/main.js')
+
+  files.forEach(file => {
+    const regex = /blocks\/([^/]+)\/main/;
+    const found = file.match(regex);
+    const pageName = found[1];
+
+    if (pageName) {
+      pages[pageName] = {
+        entry: file,
+      }
+    }
+  })
+
+  return pages
 }

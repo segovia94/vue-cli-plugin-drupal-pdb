@@ -52,13 +52,6 @@ const renameMountPoint = (options) => {
 
 module.exports = (api, options) => {
 
-  // Disable filename hashing.
-  api.extendPackage({
-    vue: {
-      filenameHashing: false,
-    },
-  })
-
   if (options.singleInstance) {
     // Generate the files.
     api.render('./template', {
@@ -76,7 +69,6 @@ module.exports = (api, options) => {
       // Rename the new block directory files.
       if (originalBlocksDir !== newBlocksDir) {
         const keys = Object.keys(files)
-        console.log(keys)
 
         const changeKeys = keys.filter(item => item.includes(originalBlocksDir))
 
