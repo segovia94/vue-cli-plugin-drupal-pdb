@@ -15,13 +15,13 @@ export default {
   },
   data () {
     return {
-      instanceId: '',
+      instanceId: ''
     }
   },
   beforeMount () {
     // Get the ID tag containing the drupal instance id.
     this.instanceId = this.$parent.$el.id
-  },
+  }
 }
 </script>
 

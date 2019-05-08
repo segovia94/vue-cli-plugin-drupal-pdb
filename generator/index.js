@@ -1,74 +1,3 @@
-const packageConfig = require('../package.json');
-const { EOL } = require('os')
-const fs = require('fs')
-
-const renameFile = (files, oldName, newName) => {
-  if (newName !== oldName) {
-    Object.defineProperty(files, newName,
-      Object.getOwnPropertyDescriptor(files, oldName))
-    delete files[oldName]
-  }
-}
-
-const replaceUnderscore = (item) => item.replace('_', '-')
-
-const addInstanceToIndex = (options) => {
-  const indexFile = 'public/index.html'
-  const content = fs.readFileSync(indexFile, { encoding: 'utf-8' })
-
-  const lines = content.split(/\r?\n/g)
-
-  const html = `    <div class="${replaceUnderscore(options.blockMachineName)}"></div>`
-
-  // First check to see if the html is already present
-  const htmlIndex = lines.findIndex(line => line.match(html))
-  // Exit if the html is already in the file.
-  if (htmlIndex !== -1) {
-    return
-  }
-
-  const mountIndex = lines.findIndex(line => line.match(/<!-- built files/))
-  // Exit if the mount point can't be found.
-  if (mountIndex === -1) {
-    return
-  }
-  lines[mountIndex - 1] += EOL + html
-
-  // Add a link to the html page.
-  const linkIndex = lines.findIndex(line => line.match(/<\/noscript>/))
-  if (linkIndex !== -1) {
-    lines[linkIndex] += `${EOL}    <a href="${options.blockMachineName}.html">${options.blockMachineName}</a>`
-  }
-
-  fs.writeFileSync(indexFile, lines.join(EOL), { encoding: 'utf-8' })
-}
-
-const renameMountPoint = (options) => {
-  const entryFile = `blocks/${options.blockMachineName}/main.js`
-  const contentMain = fs.readFileSync(entryFile, { encoding: 'utf-8' })
-
-  const lines = contentMain.split(/\r?\n/g)
-
-  const mountIndex = lines.findIndex(line => line.match(/#app/))
-  if (mountIndex !== -1) {
-    lines[mountIndex] = lines[mountIndex].replace('#app', '.' + replaceUnderscore(options.blockMachineName))
-  }
-
-  fs.writeFileSync(entryFile, lines.join(EOL), { encoding: 'utf-8' })
-}
-
-const renameBlocksDir = (files, oldDir, newDir) => {
-  if (oldDir !== newDir) {
-    const keys = Object.keys(files)
-    const changeKeys = keys.filter(item => item.includes(oldDir))
-
-    changeKeys.forEach(item => {
-      const newName = item.replace(oldDir, newDir)
-      renameFile(files, item, newName)
-    })
-  }
-}
-
 module.exports = (api, options) => {
   api.extendPackage({
     pdbVue: {
@@ -78,45 +7,10 @@ module.exports = (api, options) => {
   })
 
   if (options.mode === 'instances') {
-    const originalBlocksDir = 'blocks/example/'
-    const newBlocksDir = 'blocks/' + options.blockMachineName + '/'
-
-    // Generate the Framework files.
-    if (options.generate === 'whole') {
-      api.render('./template_framework', {
-        ...options,
-      })
-
-      api.postProcessFiles(files => {
-        // Rename the libraries.yml files.
-        renameFile(files, 'pdb_vue.libraries.yml', options.drupalModuleMachineName + '.libraries.yml')
-      })
-    }
-
-    // New block.
-    api.render('./template_block', {
-      ...options,
-    })
-
-    api.postProcessFiles(files => {
-      // Rename the info.yml files.
-      renameFile(files, originalBlocksDir + 'example.info.yml', originalBlocksDir + options.blockMachineName + '.info.yml')
-
-      // Rename the new block directory files.
-      renameBlocksDir(files, originalBlocksDir, newBlocksDir)
-    })
-
-    api.onCreateComplete(() => {
-      // Rename the mount point from #app.
-      renameMountPoint(options)
-
-      // Add the new instance div into the index.html file.
-      addInstanceToIndex(options)
-    })
-
-  } else {
-    // Generate the files.
-    api.render('./template_spa')
+    require('./instances')(api, options)
   }
 
+  if (options.mode === 'spa') {
+    require('./spa')(api, options)
+  }
 }
