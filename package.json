@@ -15,5 +15,8 @@
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "glob": "^7.1.3"
+  }
 }

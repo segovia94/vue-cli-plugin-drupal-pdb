@@ -3,8 +3,12 @@
 const parts = process.cwd().split('/')
 const possibleDrupalModule = parts[parts.length - 2]
 
-module.exports = (packageConfig, options) => {
-  const drupalModule = (packageConfig.drupalModule) ? packageConfig.drupalModule : possibleDrupalModule
+module.exports = (packageConfig) => {
+  const pdbVue = (packageConfig.pdbVue) ? packageConfig.pdbVue : {}
+
+  const drupalModule = (pdbVue.drupalModule) ? packageConfig.pdbVue.drupalModule : possibleDrupalModule
+  const mode = (pdbVue.mode) ? packageConfig.pdbVue.mode : 'instances'
+  const generate = (pdbVue.mode) ? 'block' : 'whole'
 
   return [
     {
@@ -21,28 +25,40 @@ module.exports = (packageConfig, options) => {
           value: 'block',
         },
       ],
-      default: 'whole',
+      default: generate,
     },
     {
-      name: `singleInstance`,
-      type: 'confirm',
-      message: 'Is this a single Vue instance block?',
-      default: true,
+      name: 'mode',
+      type: 'list',
+      message: 'Choose the type of PDB blocks to create?',
+      choices: [
+        {
+          name: 'Individual separate Vue instances',
+          value: 'instances',
+        },
+        {
+          name: 'SPA single page app',
+          value: 'spa',
+        },
+      ],
+      default: mode,
     },
     {
-      name: `blockName`,
+      name: 'blockName',
       type: 'input',
       message: 'Block name (human readable)',
       default: 'Hello World',
     },
     {
-      name: `blockMachineName`,
+      name: 'blockMachineName',
       type: 'input',
       message: 'Block machine name (snake_case)',
-      default: 'hello_world',
+      default: (answers) => {
+        return answers.blockName.replace(' ', '_').toLowerCase()
+      },
     },
     {
-      name: `drupalModuleMachineName`,
+      name: 'drupalModuleMachineName',
       type: 'input',
       message: 'Machine name for the Drupal module or theme these files will be created within',
       default: drupalModule,

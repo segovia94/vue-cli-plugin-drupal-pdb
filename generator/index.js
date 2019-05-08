@@ -1,3 +1,4 @@
+const packageConfig = require('../package.json');
 const { EOL } = require('os')
 const fs = require('fs')
 
@@ -31,8 +32,14 @@ const addInstanceToIndex = (options) => {
   if (mountIndex === -1) {
     return
   }
-
   lines[mountIndex - 1] += EOL + html
+
+  // Add a link to the html page.
+  const linkIndex = lines.findIndex(line => line.match(/<\/noscript>/))
+  if (linkIndex !== -1) {
+    lines[linkIndex] += `${EOL}    <a href="${options.blockMachineName}.html">${options.blockMachineName}</a>`
+  }
+
   fs.writeFileSync(indexFile, lines.join(EOL), { encoding: 'utf-8' })
 }
 
@@ -63,12 +70,14 @@ const renameBlocksDir = (files, oldDir, newDir) => {
 }
 
 module.exports = (api, options) => {
-
   api.extendPackage({
-    drupalModule: options.drupalModuleMachineName,
+    pdbVue: {
+      drupalModule: options.drupalModuleMachineName,
+      mode: options.mode,
+    },
   })
 
-  if (options.singleInstance) {
+  if (options.mode === 'instances') {
     const originalBlocksDir = 'blocks/hello_world/'
     const newBlocksDir = 'blocks/' + options.blockMachineName + '/'
 
