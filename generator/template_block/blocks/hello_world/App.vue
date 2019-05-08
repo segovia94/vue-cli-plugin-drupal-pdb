@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your PDB Vue.js App"/>
+    <HelloWorld msg="Welcome to Your <%= blockName %> PDB Vue.js App"/>
   </div>
 </template>
 

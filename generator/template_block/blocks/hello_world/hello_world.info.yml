@@ -9,9 +9,9 @@ presentation: vue
 add_css:
   header:
     theme:
-      'dist/css/<%= blockMachineName %>.css': {}
+      '../../dist/css/<%= blockMachineName %>.css': {}
 add_js:
   footer:
-    'dist/js/<%= blockMachineName %>.js': {}
+    '../../dist/js/<%= blockMachineName %>.js': {}
 libraries:
   - <%= drupalModuleMachineName %>/pdb_vue.common

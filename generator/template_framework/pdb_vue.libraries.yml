@@ -1,5 +1,8 @@
+# Move this file into your <%= drupalModuleMachineName %> root directory or copy
+# and paste this code into an existing <%= drupalModuleMachineName %>.libraries.yml file.
 pdb_vue.common:
   version: VERSION
   js:
-    dist/js/chunk-vendors.js: { minified: true }
-#    dist/js/chunk-common.js: { minified: true }
+    # Change "pdb_vue" to the path where your pdb vue blocks are stored.
+    pdb_vue/dist/js/chunk-vendors.js: { minified: true }
+#    pdb_vue/dist/js/chunk-common.js: { minified: true }
