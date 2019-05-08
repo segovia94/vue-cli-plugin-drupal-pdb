@@ -78,7 +78,7 @@ module.exports = (api, options) => {
   })
 
   if (options.mode === 'instances') {
-    const originalBlocksDir = 'blocks/hello_world/'
+    const originalBlocksDir = 'blocks/example/'
     const newBlocksDir = 'blocks/' + options.blockMachineName + '/'
 
     // Generate the Framework files.
@@ -100,7 +100,7 @@ module.exports = (api, options) => {
 
     api.postProcessFiles(files => {
       // Rename the info.yml files.
-      renameFile(files, originalBlocksDir + 'hello_world.info.yml', originalBlocksDir + options.blockMachineName + '.info.yml')
+      renameFile(files, originalBlocksDir + 'example.info.yml', originalBlocksDir + options.blockMachineName + '.info.yml')
 
       // Rename the new block directory files.
       renameBlocksDir(files, originalBlocksDir, newBlocksDir)
