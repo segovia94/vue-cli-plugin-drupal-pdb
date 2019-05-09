@@ -8,7 +8,7 @@ pdb_vue.common:
       pdb_vue/dist/css/app.css: {}
   js:
     pdb_vue/dist/js/chunk-vendors.js: { minified: true }
-    pdb_vue/dist/js/app.js: { minified: true }
 #    pdb_vue/dist/js/chunk-common.js: { minified: true }
+    pdb_vue/dist/js/app.js: { minified: true }
   dependencies:
     - pdb_vue/vue
