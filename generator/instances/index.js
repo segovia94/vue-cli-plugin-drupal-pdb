@@ -1,72 +1,4 @@
-const { EOL } = require('os')
-const fs = require('fs')
-
-const renameFile = (files, oldName, newName) => {
-  if (newName !== oldName) {
-    Object.defineProperty(files, newName,
-      Object.getOwnPropertyDescriptor(files, oldName))
-    delete files[oldName]
-  }
-}
-
-const replaceUnderscore = (item) => item.replace('_', '-')
-
-const addInstanceToIndex = (options) => {
-  const indexFile = 'public/index.html'
-  const content = fs.readFileSync(indexFile, { encoding: 'utf-8' })
-
-  const lines = content.split(/\r?\n/g)
-
-  const html = `    <div class="${replaceUnderscore(options.blockMachineName)}"></div>`
-
-  // First check to see if the html is already present
-  const htmlIndex = lines.findIndex(line => line.match(html))
-  // Exit if the html is already in the file.
-  if (htmlIndex !== -1) {
-    return
-  }
-
-  const mountIndex = lines.findIndex(line => line.match(/<!-- built files/))
-  // Exit if the mount point can't be found.
-  if (mountIndex === -1) {
-    return
-  }
-  lines[mountIndex - 1] += EOL + html
-
-  // Add a link to the html page.
-  const linkIndex = lines.findIndex(line => line.match(/<\/noscript>/))
-  if (linkIndex !== -1) {
-    lines[linkIndex] += `${EOL}    <a href="${options.blockMachineName}.html">${options.blockMachineName}</a>`
-  }
-
-  fs.writeFileSync(indexFile, lines.join(EOL), { encoding: 'utf-8' })
-}
-
-const renameMountPoint = (options) => {
-  const entryFile = `blocks/${options.blockMachineName}/main.js`
-  const contentMain = fs.readFileSync(entryFile, { encoding: 'utf-8' })
-
-  const lines = contentMain.split(/\r?\n/g)
-
-  const mountIndex = lines.findIndex(line => line.match(/#app/))
-  if (mountIndex !== -1) {
-    lines[mountIndex] = lines[mountIndex].replace('#app', '.' + replaceUnderscore(options.blockMachineName))
-  }
-
-  fs.writeFileSync(entryFile, lines.join(EOL), { encoding: 'utf-8' })
-}
-
-const renameBlocksDir = (files, oldDir, newDir) => {
-  if (oldDir !== newDir) {
-    const keys = Object.keys(files)
-    const changeKeys = keys.filter(item => item.includes(oldDir))
-
-    changeKeys.forEach(item => {
-      const newName = item.replace(oldDir, newDir)
-      renameFile(files, item, newName)
-    })
-  }
-}
+const { renameFile, convertToHyphenCase, addInstanceToIndex, renameMountPoint, renameBlocksDir } = require('../../lib/generator-helpers')
 
 module.exports = (api, options) => {
   const originalBlocksDir = 'blocks/example/'
@@ -87,6 +19,7 @@ module.exports = (api, options) => {
   // New block.
   api.render('./template_block', {
     ...options,
+    blockMachineNameHyphen: convertToHyphenCase(options.blockMachineName)
   })
 
   api.postProcessFiles(files => {

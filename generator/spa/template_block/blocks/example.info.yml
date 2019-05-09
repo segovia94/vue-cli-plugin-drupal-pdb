@@ -1,5 +1,5 @@
 name: <%= blockName %>
-machine_name: <%= blockMachineName %>
+machine_name: <%= blockMachineNameHyphen %>
 type: pdb
 description: '<%= blockName %> pdb_vue block'
 package: Vue
