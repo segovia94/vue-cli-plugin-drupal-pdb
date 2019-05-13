@@ -11,7 +11,9 @@
     "url": "https://github.com/segovia94/vue-cli-plugin-drupal-pdb"
   },
   "keywords": [
-    "vue"
+    "vue",
+    "vue-cli",
+    "drupal"
   ],
   "author": "",
   "license": "MIT",
