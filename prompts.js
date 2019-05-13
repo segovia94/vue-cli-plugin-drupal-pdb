@@ -30,14 +30,14 @@ module.exports = (packageConfig) => {
     {
       name: 'mode',
       type: 'list',
-      message: 'Choose the type of PDB blocks to create?',
+      message: 'Choose the Framework Mode type of PDB blocks to create?',
       choices: [
         {
-          name: 'Individual separate Vue instances',
+          name: 'Mode: Individual Per-block Vue instances',
           value: 'instances',
         },
         {
-          name: 'SPA single page app',
+          name: 'Mode: SPA single page app',
           value: 'spa',
         },
       ],
