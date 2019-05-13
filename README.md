@@ -8,6 +8,7 @@ Components](https://vuejs.org/v2/guide/single-file-components.html).
 ## Getting Started
 
 1. Make sure that Vue CLI 3 is installed. https://cli.vuejs.org/guide/installation.html
+and create a new project in your module or theme with `vue create pdb_vue`
 
 2. Add this plugin
 
